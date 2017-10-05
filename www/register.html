@@ -1,0 +1,74 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript" src="js/photo_upload.js"></script>
+  <script type="text/javascript" src="cordova.js"></script>
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $("#insert").click(function() {
+      var username = $("#username").val();
+      var email = $("#email").val();
+      var password = $("#password").val();
+      var dataString = "username=" + username + "&email=" + email + "&password=" + password;
+      if ($.trim(username).length > 0 & $.trim(email).length > 0 & $.trim(password).length > 0) {
+        $.ajax({
+          type: "POST",
+          url: "http://sanjaprodan.net/jan_dipl/register.php",
+          data: dataString,
+          crossDomain: true,
+          cache: false,
+          success: function(data) {
+            if (data == "success") {
+              $("#insert").val('submit');
+              window.sessionStorage.setItem("loggedIn", 1);
+              window.sessionStorage.setItem("username", username);
+              window.location.replace("index.html");
+            } else if (data == "error") {
+              alert("error");
+            }
+          }
+        });
+      }
+      return false;
+    });
+  });
+  </script>
+</head>
+
+<body>
+  <div data-role="page">
+    <div data-role="header"><h1>Register</h1></div>
+      <div data-role="content">
+        <div class="list">
+          <input type="hidden" id="id" value="" />
+          <div class="item">
+            <label>Username</label>
+            <input type="text" id="username" value="" />
+          </div>
+          <div class="item">
+            <label>Email</label>
+            <input type="text" id="email" value="" />
+          </div>
+          <div class="item">
+            <label>Passsword</label>
+            <input type="password" id="password" value="" />
+          </div>
+          <div class="item">
+            <input type="button" id="insert" value="Register" />
+          </div>
+        </div>
+      </div>
+    <div data-role="footer" class="center">
+        <a data-ajax="false" rel="external" href="login.html">Login</a>
+    </div> 
+  </div>
+ 
+</body>
+
+</html>

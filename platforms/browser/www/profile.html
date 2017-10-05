@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript" src="js/photo_upload.js"></script>
+  <script type="text/javascript" src="cordova.js"></script>
+  <script type="text/javascript" src="js/get_avatar.js"></script>
+  <script type="text/javascript">
+  var curr_username = window.sessionStorage.getItem("username");
+  if (curr_username === null) {
+    window.location.replace("login.html");
+  }
+
+  var username = window.location.href.split('=')[1];
+
+
+  function addPost() {
+    var title = $("#title").val();
+    var content = $("#post_content").val();
+
+    $.ajax({
+      type: "POST",
+      url: "http://sanjaprodan.net/jan_dipl/add_post.php",
+      data: 'username=' + curr_username + '&title=' + title + '&content=' + content,
+      crossDomain: true,
+      cache: false,
+      success: function(data) {
+        alert(data);
+        if (data == "success") {
+          window.location.reload();
+        } else if (data == "error") {
+          alert("error");
+        }
+      }
+    });
+  }
+
+
+  // display all posts
+  $(document).on('pagecreate', function() {
+
+    if (curr_username === username) {
+      $('#curr_user_only').show();
+      $('#new_post_button').click(function() {
+        $('#new_post_area').show()
+        $('#submit_post').on('click', addPost);
+
+      });
+    }
+
+    getAvatar(username);
+
+    $('#username').text(username);
+
+    $.ajax({
+      type: "POST",
+      url: "http://sanjaprodan.net/jan_dipl/get_posts.php",
+      data: 'username=' + username,
+      crossDomain: true,
+      cache: false,
+      success: function(data) {
+        data = JSON.parse(data);
+        for (var i = 0; i < data.length; i++) {
+
+          var html = '<div class="single_post">';
+          html += '<h2>' + data[i].title + '</h2>';
+          html += '<div class="info"><span>' + data[i].date + '</span></div>';
+          html += '<p>' + data[i].content + '</p>';
+          html += '</div>';
+          $("#posts").append(html);
+        }
+      }
+    });
+  });
+  </script>
+  </script>
+</head>
+
+<body>
+  <div data-role="page">
+    <div data-role="header"><a href="index.html" data-ajax="false" rel="remote" data-icon="back">Back</a>
+      <h1 id="username"></h1></div>
+    <div data-role="content">
+      <div class="avatar_wrap">
+        <img class="avatar" id="avatar" />
+      </div>
+      <div id="curr_user_only">
+        <button onclick="capturePhoto();">Change Avatar - Camera</button> <br>
+        <!-- <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br> -->
+        <button id="new_post_button">New post</button>
+        <div id="new_post_area">
+          <div class="list">
+            <div class="item">
+              <label>Title</label>
+              <input type="text" id="title" />
+            </div>
+            <div class="item">
+              <label>Content</label>
+              <textarea id="post_content" /></textarea>
+            </div>
+            <div class="item">
+              <input type="button" class="button button-block" value="Submit post" id="submit_post" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="posts"></div>
+    </div>
+    <div data-role="footer"></div>
+  </div>
+</body>
+
+</html>

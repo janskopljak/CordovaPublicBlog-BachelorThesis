@@ -1,0 +1,65 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#insert").click(function() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var dataString = "username=" + username + "&password=" + password;
+        if ($.trim(username).length > 0 && $.trim(password).length > 0) {
+          $.ajax({
+            type: "POST",
+            url: "http://sanjaprodan.net/jan_dipl/login.php",
+            data: dataString,
+            crossDomain: true,
+            cache: false,
+            success: function(data) {
+              if (data == "success") {
+                window.sessionStorage.setItem("loggedIn", 1);
+                window.sessionStorage.setItem("username", username);
+                window.location.replace("index.html");
+              } else if (data == "error") {
+                alert('error');
+              }
+            }
+          });
+        }
+        return false;
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div data-role="page">
+    <div data-role="header"><h1>Login</h1></div>
+    <div data-role="content">
+      <div class="list">
+        <div class="item">
+          <label>Username</label>
+          <input type="text" id="username" value="" />
+        </div>
+        <div class="item">
+          <label>Password</label>
+          <input type="password" id="password" value="" />
+        </div>
+        <div class="item">
+          <input type="button" id="insert" class="button button-block" value="Login" />
+        </div>
+      </div>  
+    </div>
+    <div data-role="footer" class="center">
+      <a data-ajax="false" rel="external" href="register.html">Register</a>
+    </div> 
+  </div>
+</body>
+
+</html>

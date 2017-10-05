@@ -1,0 +1,57 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+
+  <script type="text/javascript">
+    var curr_username = window.sessionStorage.getItem("username");
+    if (curr_username === null) {
+      window.location.replace("login.html");
+    }
+
+    var url = "http://sanjaprodan.net/jan_dipl/index.php";
+    $(document).on('pagecreate',function() {
+      $.getJSON(url, function(result) {
+        $.each(result, function(i, field) {
+          var html = '<div class="single_post">';
+          html += '<h2>' + field.title + '</h2>';
+          html += '<img class="avatar" src="' + field.avatar + '">';
+          html += '<div class="info"><span>' + field.date + '</span>';
+          html += '<a data-ajax="false" rel="remote" href="profile.html?username=' + field.username + '">' + field.username + '</a></div>';
+          html += '<p>' + field.content + '</p>';
+          html += '</div>';
+          $("#posts").append(html);
+        });
+      });
+      $('#profile_btn').attr('href','profile.html?username=' + curr_username).text(curr_username)
+
+      $('#logout').click(function(e) {
+        e.preventDefault();
+        window.sessionStorage.removeItem("username");
+        window.location.replace('login.html');
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <!-- 0ew98jfwisduvns -->
+  <div data-role="page">
+    <div data-role="header">
+      <h1>Homepage</h1>
+      <a rel="external" data-ajax="false" href="" id="profile_btn" data-icon="user"></a>
+      <a href="login.html" id="logout" data-icon="power">Logout</a>
+    </div>
+    <div data-role="content">
+      <div id="posts">
+      </div>
+    </div>
+    <div data-role="footer"><h1>Footer</h1></div>
+  </div>
+</body>
+
+</html>
